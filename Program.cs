@@ -6,7 +6,7 @@ var legend = new[] {
   ("request passed thru to Graph", MessageType.PassedThru),
   ("Warning", MessageType.Warning),
   ("Tip", MessageType.Tip),
-  ("Failed", MessageType.Failed),
+  ("Chaos", MessageType.Failed),
   ("Error", MessageType.Error),
   ("Mocked", MessageType.Mocked)
 };
@@ -40,6 +40,10 @@ WriteData(sampleData, WriteColorWithAsciiIcons);
 WriteData(sampleData, WriteWithColorAsciiIcons);
 WriteData(sampleData, WriteWithInvertedColorAsciiIcons);
 WriteData(sampleData, WriteColorWithEmojiIcons);
+WriteData(sampleData, WriteIndented);
+WriteData(sampleData, WriteColorWithLabels);
+WriteData(sampleData, WriteWithColorLabels);
+WriteData(sampleData, WriteWithInvertedColorLabels);
 
 void WriteColorWithAsciiIcons(string message, MessageType type)
 {
@@ -240,6 +244,173 @@ void WriteColorWithEmojiIcons(string message, MessageType type)
   Console.ForegroundColor = defaultFgColor;
 }
 
+void WriteIndented(string message, MessageType type)
+{
+  var indent = "";
+  switch (type)
+  {
+    case MessageType.InterceptedRequest:
+      indent = "";
+      break;
+    default:
+      indent = "   ";
+      break;
+  }
+
+  Console.WriteLine($"{indent}{message}");
+}
+
+void WriteColorWithLabels(string message, MessageType type)
+{
+  var label = "";
+  var color = defaultFgColor;
+
+  switch (type)
+  {
+    case MessageType.Error:
+      label = "[  ERROR  ]";
+      color = ConsoleColor.Red;
+      break;
+    case MessageType.Failed:
+      label = "[  CHAOS  ]";
+      color = ConsoleColor.DarkRed;
+      break;
+    case MessageType.InterceptedRequest:
+      label = "[ REQUEST ]";
+      break;
+    case MessageType.Mocked:
+      label = "[  MOCK   ]";
+      color = ConsoleColor.DarkYellow;
+      break;
+    case MessageType.Normal:
+      label = "";
+      break;
+    case MessageType.PassedThru:
+      label = "[  GRAPH  ]";
+      color = ConsoleColor.Gray;
+      break;
+    case MessageType.Tip:
+      label = "[   TIP   ]";
+      color = ConsoleColor.Blue;
+      break;
+    case MessageType.Warning:
+      label = "[ WARNING ]";
+      color = ConsoleColor.Yellow;
+      break;
+    default:
+      label = "";
+      break;
+  }
+
+  Console.ForegroundColor = color;
+  Console.WriteLine($"{label}  {message}");
+  Console.ForegroundColor = defaultFgColor;
+}
+
+void WriteWithColorLabels(string message, MessageType type)
+{
+  var label = "";
+  var color = defaultFgColor;
+
+  switch (type)
+  {
+    case MessageType.Error:
+      label = "[  ERROR  ]";
+      color = ConsoleColor.Red;
+      break;
+    case MessageType.Failed:
+      label = "[  CHAOS  ]";
+      color = ConsoleColor.DarkRed;
+      break;
+    case MessageType.InterceptedRequest:
+      label = "[ REQUEST ]";
+      break;
+    case MessageType.Mocked:
+      label = "[  MOCK   ]";
+      color = ConsoleColor.DarkYellow;
+      break;
+    case MessageType.Normal:
+      label = "";
+      break;
+    case MessageType.PassedThru:
+      label = "[  GRAPH  ]";
+      color = ConsoleColor.Gray;
+      break;
+    case MessageType.Tip:
+      label = "[   TIP   ]";
+      color = ConsoleColor.Blue;
+      break;
+    case MessageType.Warning:
+      label = "[ WARNING ]";
+      color = ConsoleColor.Yellow;
+      break;
+    default:
+      label = "";
+      break;
+  }
+
+  Console.ForegroundColor = color;
+  Console.Write(label);
+  Console.ForegroundColor = defaultFgColor;
+  Console.WriteLine($"  {message}");
+}
+
+void WriteWithInvertedColorLabels(string message, MessageType type)
+{
+  var label = "";
+  var fgColor = defaultFgColor;
+  var bgColor = defaultBgColor; 
+
+  switch (type)
+  {
+    case MessageType.Error:
+      label = "[  ERROR  ]";
+      fgColor = ConsoleColor.White;
+      bgColor = ConsoleColor.Red;
+      break;
+    case MessageType.Failed:
+      label = "[  CHAOS  ]";
+      fgColor = ConsoleColor.White;
+      bgColor = ConsoleColor.DarkRed;
+      break;
+    case MessageType.InterceptedRequest:
+      label = "[ REQUEST ]";
+      break;
+    case MessageType.Mocked:
+      label = "[  MOCK   ]";
+      fgColor = ConsoleColor.Black;
+      bgColor = ConsoleColor.DarkYellow;
+      break;
+    case MessageType.Normal:
+      label = "";
+      break;
+    case MessageType.PassedThru:
+      label = "[  GRAPH  ]";
+      fgColor = ConsoleColor.Black;
+      bgColor = ConsoleColor.Gray;
+      break;
+    case MessageType.Tip:
+      label = "[   TIP   ]";
+      fgColor = ConsoleColor.White;
+      bgColor = ConsoleColor.Blue;
+      break;
+    case MessageType.Warning:
+      label = "[ WARNING ]";
+      fgColor = ConsoleColor.Black;
+      bgColor = ConsoleColor.Yellow;
+      break;
+    default:
+      label = "";
+      break;
+  }
+
+  Console.BackgroundColor = bgColor;
+  Console.ForegroundColor = fgColor;
+  Console.Write(label);
+  Console.BackgroundColor = defaultBgColor;
+  Console.ForegroundColor = defaultFgColor;
+  Console.WriteLine($"  {message}");
+}
 enum MessageType
 {
   Normal,
