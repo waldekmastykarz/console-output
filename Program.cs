@@ -13,10 +13,13 @@ var legend = new[] {
 var sampleData = new[] {
   ("GET https://graph.microsoft.com/v1.0/me?$select=id", MessageType.InterceptedRequest),
   ("GET https://graph.microsoft.com/v1.0/me?$select=id", MessageType.PassedThru),
-  ("To improve performance of your application, use the $select parameter. More info at https://learn.microsoft.com/graph/query-parameters#select-parameter", MessageType.Warning),
-  ("To handle API errors more easily, use the Graph SDK. More info at https://aka.ms/move-to-graph-js-sdk", MessageType.Tip),
+  ("To improve performance of your application, use the $select parameter.", MessageType.Warning),
+  (" ↪ More info at https://learn.microsoft.com/graph/query-parameters#select-parameter", MessageType.Warning),
+  ("To handle API errors more easily, use the Graph SDK.", MessageType.Tip),
+  (" ↪ More info at https://aka.ms/move-to-graph-js-sdk", MessageType.Tip),
   ("429 Too Many Requests", MessageType.Failed),
-  ("Calling https://graph.microsoft.com/v1.0/me?$select=id again before waiting for the Retry-After period. Request will be throttled", MessageType.Error),
+  ("Calling https://graph.microsoft.com/v1.0/me?$select=id before waiting for the Retry-After period.", MessageType.Error),
+  (" ↪ Request will be throttled", MessageType.Error),
   ("200 OK https://graph.microsoft.com/v1.0/me*", MessageType.Mocked)
 };
 
@@ -206,10 +209,10 @@ void WriteColorWithEmojiIcons(string message, MessageType type)
       color = ConsoleColor.DarkRed;
       break;
     case MessageType.InterceptedRequest:
-      icon = "⬅️";
+      icon = "⬅️ ";
       break;
     case MessageType.Mocked:
-      icon = "↪️";
+      icon = "✴️ ";
       color = ConsoleColor.DarkYellow;
       break;
     case MessageType.Normal:
@@ -220,11 +223,11 @@ void WriteColorWithEmojiIcons(string message, MessageType type)
       color = ConsoleColor.Gray;
       break;
     case MessageType.Tip:
-      icon = "ℹ️";
+      icon = "ℹ️ ";
       color = ConsoleColor.Blue;
       break;
     case MessageType.Warning:
-      icon = "⚠️";
+      icon = "⚠️ ";
       color = ConsoleColor.Yellow;
       break;
     default:
