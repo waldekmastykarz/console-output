@@ -1,4 +1,6 @@
-﻿var defaultColor = Console.ForegroundColor;
+﻿var defaultFgColor = Console.ForegroundColor;
+var defaultBgColor = Console.BackgroundColor;
+
 var legend = new[] {
   ("intercepted request", MessageType.InterceptedRequest),
   ("request passed thru to Graph", MessageType.PassedThru),
@@ -33,12 +35,13 @@ void WriteData((string, MessageType)[] data, Action<string, MessageType> handler
 WriteData(legend, WriteColorWithAsciiIcons);
 WriteData(sampleData, WriteColorWithAsciiIcons);
 WriteData(sampleData, WriteWithColorAsciiIcons);
+WriteData(sampleData, WriteWithInvertedColorAsciiIcons);
 WriteData(sampleData, WriteColorWithEmojiIcons);
 
 void WriteColorWithAsciiIcons(string message, MessageType type)
 {
   var icon = "";
-  var color = defaultColor;
+  var color = defaultFgColor;
 
   switch (type)
   {
@@ -79,13 +82,13 @@ void WriteColorWithAsciiIcons(string message, MessageType type)
 
   Console.ForegroundColor = color;
   Console.WriteLine($"{icon} {message}");
-  Console.ForegroundColor = defaultColor;
+  Console.ForegroundColor = defaultFgColor;
 }
 
 void WriteWithColorAsciiIcons(string message, MessageType type)
 {
   var icon = "";
-  var color = defaultColor;
+  var color = defaultFgColor;
 
   switch (type)
   {
@@ -126,14 +129,71 @@ void WriteWithColorAsciiIcons(string message, MessageType type)
 
   Console.ForegroundColor = color;
   Console.Write(icon);
-  Console.ForegroundColor = defaultColor;
+  Console.ForegroundColor = defaultFgColor;
+  Console.WriteLine($" {message}");
+}
+
+void WriteWithInvertedColorAsciiIcons(string message, MessageType type)
+{
+  var icon = "";
+  var fgColor = defaultFgColor;
+  var bgColor = defaultBgColor; 
+
+  switch (type)
+  {
+    case MessageType.Error:
+      icon = "× →";
+      fgColor = ConsoleColor.White;
+      bgColor = ConsoleColor.Red;
+      break;
+    case MessageType.Failed:
+      icon = "× →";
+      fgColor = ConsoleColor.White;
+      bgColor = ConsoleColor.DarkRed;
+      break;
+    case MessageType.InterceptedRequest:
+      icon = "← ←";
+      break;
+    case MessageType.Mocked:
+      icon = "o →";
+      fgColor = ConsoleColor.Black;
+      bgColor = ConsoleColor.DarkYellow;
+      break;
+    case MessageType.Normal:
+      icon = "   ";
+      break;
+    case MessageType.PassedThru:
+      icon = "↑ ↑";
+      fgColor = ConsoleColor.Black;
+      bgColor = ConsoleColor.Gray;
+      break;
+    case MessageType.Tip:
+      icon = "(i)";
+      fgColor = ConsoleColor.White;
+      bgColor = ConsoleColor.Blue;
+      break;
+    case MessageType.Warning:
+      icon = "/!\\";
+      fgColor = ConsoleColor.Black;
+      bgColor = ConsoleColor.Yellow;
+      break;
+    default:
+      icon = "   ";
+      break;
+  }
+
+  Console.BackgroundColor = bgColor;
+  Console.ForegroundColor = fgColor;
+  Console.Write($" {icon} ");
+  Console.BackgroundColor = defaultBgColor;
+  Console.ForegroundColor = defaultFgColor;
   Console.WriteLine($" {message}");
 }
 
 void WriteColorWithEmojiIcons(string message, MessageType type)
 {
   var icon = "";
-  var color = defaultColor;
+  var color = defaultFgColor;
 
   switch (type)
   {
@@ -174,7 +234,7 @@ void WriteColorWithEmojiIcons(string message, MessageType type)
 
   Console.ForegroundColor = color;
   Console.WriteLine($"{icon} {message}");
-  Console.ForegroundColor = defaultColor;
+  Console.ForegroundColor = defaultFgColor;
 }
 
 enum MessageType
