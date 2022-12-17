@@ -1,45 +1,190 @@
 ﻿var defaultColor = Console.ForegroundColor;
+var legend = new[] {
+  ("intercepted request", MessageType.InterceptedRequest),
+  ("request passed thru to Graph", MessageType.PassedThru),
+  ("Warning", MessageType.Warning),
+  ("Tip", MessageType.Tip),
+  ("Failed", MessageType.Failed),
+  ("Error", MessageType.Error),
+  ("Mocked", MessageType.Mocked)
+};
+var sampleData = new[] {
+  ("GET https://graph.microsoft.com/v1.0/me?$select=id", MessageType.InterceptedRequest),
+  ("GET https://graph.microsoft.com/v1.0/me?$select=id", MessageType.PassedThru),
+  ("To improve performance of your application, use the $select parameter. More info at https://learn.microsoft.com/graph/query-parameters#select-parameter", MessageType.Warning),
+  ("To handle API errors more easily, use the Graph SDK. More info at https://aka.ms/move-to-graph-js-sdk", MessageType.Tip),
+  ("429 Too Many Requests", MessageType.Failed),
+  ("Calling https://graph.microsoft.com/v1.0/me?$select=id again before waiting for the Retry-After period. Request will be throttled", MessageType.Error),
+  ("200 OK https://graph.microsoft.com/v1.0/me*", MessageType.Mocked)
+};
 
-Write("← ← intercepted request");
-WriteWithColor("↑ ↑ request passed thru to Graph", ConsoleColor.DarkGreen);
-WriteWithColor("/!\\ Warning", ConsoleColor.Yellow);
-WriteWithColor("(i) Tip", ConsoleColor.Blue);
-WriteWithColor("x → Failed", ConsoleColor.DarkRed);
-WriteWithColor("o → Mocked", ConsoleColor.DarkYellow);
-
-Console.WriteLine();
-Console.WriteLine();
-Console.WriteLine();
-
-Write("← ← GET https://graph.microsoft.com/v1.0/me?$select=id");
-WriteWithColor("↑ ↑ GET https://graph.microsoft.com/v1.0/me?$select=id", ConsoleColor.DarkGreen);
-WriteWithColor("/!\\ To improve performance of your application, use the $select parameter. More info at https://learn.microsoft.com/graph/query-parameters#select-parameter", ConsoleColor.Yellow);
-WriteWithColor("(i) To handle API errors more easily, use the Graph SDK. More info at https://aka.ms/move-to-graph-js-sdk", ConsoleColor.Blue);
-WriteWithColor("× → 429 Too Many Requests", ConsoleColor.DarkRed);
-WriteWithColor("× → Calling https://graph.microsoft.com/v1.0/me?$select=id again before waiting for the Retry-After period. Request will be throttled", ConsoleColor.Red);
-WriteWithColor("○ → 200 OK https://graph.microsoft.com/v1.0/me*", ConsoleColor.DarkYellow);
-
-Console.WriteLine();
-Console.WriteLine();
-Console.WriteLine();
-
-Write("⬅️ GET https://graph.microsoft.com/v1.0/me?$select=id");
-WriteWithColor("🦒 GET https://graph.microsoft.com/v1.0/me?$select=id", ConsoleColor.DarkGreen);
-WriteWithColor("⚠️ To improve performance of your application, use the $select parameter. More info at https://learn.microsoft.com/graph/query-parameters#select-parameter", ConsoleColor.Yellow);
-WriteWithColor("ℹ️  To handle API errors more easily, use the Graph SDK. More info at https://aka.ms/move-to-graph-js-sdk", ConsoleColor.Blue);
-WriteWithColor("🛑 429 Too Many Requests", ConsoleColor.DarkRed);
-WriteWithColor("🐞 Calling https://graph.microsoft.com/v1.0/me?$select=id again before waiting for the Retry-After period. Request will be throttled", ConsoleColor.Red);
-WriteWithColor("↪️ 200 OK https://graph.microsoft.com/v1.0/me*", ConsoleColor.DarkYellow);
-
-
-void Write(string message)
+void WriteData((string, MessageType)[] data, Action<string, MessageType> handler)
 {
-  Console.WriteLine(message);
+  foreach (var message in data)
+  {
+    handler(message.Item1, message.Item2);
+  }
+
+  Console.WriteLine();
+  Console.WriteLine();
+  Console.WriteLine();
 }
 
-void WriteWithColor(string message, ConsoleColor color)
+WriteData(legend, WriteColorWithAsciiIcons);
+WriteData(sampleData, WriteColorWithAsciiIcons);
+WriteData(sampleData, WriteWithColorAsciiIcons);
+WriteData(sampleData, WriteColorWithEmojiIcons);
+
+void WriteColorWithAsciiIcons(string message, MessageType type)
 {
+  var icon = "";
+  var color = defaultColor;
+
+  switch (type)
+  {
+    case MessageType.Error:
+      icon = "× →";
+      color = ConsoleColor.Red;
+      break;
+    case MessageType.Failed:
+      icon = "× →";
+      color = ConsoleColor.DarkRed;
+      break;
+    case MessageType.InterceptedRequest:
+      icon = "← ←";
+      break;
+    case MessageType.Mocked:
+      icon = "o →";
+      color = ConsoleColor.DarkYellow;
+      break;
+    case MessageType.Normal:
+      icon = "   ";
+      break;
+    case MessageType.PassedThru:
+      icon = "↑ ↑";
+      color = ConsoleColor.Gray;
+      break;
+    case MessageType.Tip:
+      icon = "(i)";
+      color = ConsoleColor.Blue;
+      break;
+    case MessageType.Warning:
+      icon = "/!\\";
+      color = ConsoleColor.Yellow;
+      break;
+    default:
+      icon = "   ";
+      break;
+  }
+
   Console.ForegroundColor = color;
-  Write(message);
+  Console.WriteLine($"{icon} {message}");
   Console.ForegroundColor = defaultColor;
+}
+
+void WriteWithColorAsciiIcons(string message, MessageType type)
+{
+  var icon = "";
+  var color = defaultColor;
+
+  switch (type)
+  {
+    case MessageType.Error:
+      icon = "× →";
+      color = ConsoleColor.Red;
+      break;
+    case MessageType.Failed:
+      icon = "× →";
+      color = ConsoleColor.DarkRed;
+      break;
+    case MessageType.InterceptedRequest:
+      icon = "← ←";
+      break;
+    case MessageType.Mocked:
+      icon = "o →";
+      color = ConsoleColor.DarkYellow;
+      break;
+    case MessageType.Normal:
+      icon = "   ";
+      break;
+    case MessageType.PassedThru:
+      icon = "↑ ↑";
+      color = ConsoleColor.Gray;
+      break;
+    case MessageType.Tip:
+      icon = "(i)";
+      color = ConsoleColor.Blue;
+      break;
+    case MessageType.Warning:
+      icon = "/!\\";
+      color = ConsoleColor.Yellow;
+      break;
+    default:
+      icon = "   ";
+      break;
+  }
+
+  Console.ForegroundColor = color;
+  Console.Write(icon);
+  Console.ForegroundColor = defaultColor;
+  Console.WriteLine($" {message}");
+}
+
+void WriteColorWithEmojiIcons(string message, MessageType type)
+{
+  var icon = "";
+  var color = defaultColor;
+
+  switch (type)
+  {
+    case MessageType.Error:
+      icon = "🐞";
+      color = ConsoleColor.Red;
+      break;
+    case MessageType.Failed:
+      icon = "🛑";
+      color = ConsoleColor.DarkRed;
+      break;
+    case MessageType.InterceptedRequest:
+      icon = "⬅️";
+      break;
+    case MessageType.Mocked:
+      icon = "↪️";
+      color = ConsoleColor.DarkYellow;
+      break;
+    case MessageType.Normal:
+      icon = " ";
+      break;
+    case MessageType.PassedThru:
+      icon = "🦒";
+      color = ConsoleColor.Gray;
+      break;
+    case MessageType.Tip:
+      icon = "ℹ️";
+      color = ConsoleColor.Blue;
+      break;
+    case MessageType.Warning:
+      icon = "⚠️";
+      color = ConsoleColor.Yellow;
+      break;
+    default:
+      icon = " ";
+      break;
+  }
+
+  Console.ForegroundColor = color;
+  Console.WriteLine($"{icon} {message}");
+  Console.ForegroundColor = defaultColor;
+}
+
+enum MessageType
+{
+  Normal,
+  InterceptedRequest,
+  PassedThru,
+  Warning,
+  Tip,
+  Failed,
+  Error,
+  Mocked
 }
