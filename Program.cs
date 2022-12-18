@@ -3,7 +3,7 @@ var defaultBgColor = Console.BackgroundColor;
 
 var legend = new[] {
   ("intercepted request", MessageType.InterceptedRequest),
-  ("request passed thru to Graph", MessageType.PassedThru),
+  ("request passed through to Graph", MessageType.PassedThrough),
   ("Warning", MessageType.Warning),
   ("Tip", MessageType.Tip),
   ("Chaos", MessageType.Failed),
@@ -12,7 +12,7 @@ var legend = new[] {
 };
 var sampleData = new[] {
   ("GET https://graph.microsoft.com/v1.0/me?$select=id", MessageType.InterceptedRequest),
-  ("GET https://graph.microsoft.com/v1.0/me?$select=id", MessageType.PassedThru),
+  (" ↪ passed through", MessageType.PassedThrough),
   ("To improve performance of your application, use the $select parameter.", MessageType.Warning),
   (" ↪ More info at https://learn.microsoft.com/graph/query-parameters#select-parameter", MessageType.Warning),
   ("To handle API errors more easily, use the Graph SDK.", MessageType.Tip),
@@ -44,6 +44,7 @@ WriteData(sampleData, WriteIndented);
 WriteData(sampleData, WriteColorWithLabels);
 WriteData(sampleData, WriteWithColorLabels);
 WriteData(sampleData, WriteWithInvertedColorLabels);
+WriteData(sampleData, WriteWithShortColorLabels);
 
 void WriteColorWithAsciiIcons(string message, MessageType type)
 {
@@ -53,7 +54,7 @@ void WriteColorWithAsciiIcons(string message, MessageType type)
   switch (type)
   {
     case MessageType.Error:
-      icon = "× →";
+      icon = "! →";
       color = ConsoleColor.Red;
       break;
     case MessageType.Failed:
@@ -70,7 +71,7 @@ void WriteColorWithAsciiIcons(string message, MessageType type)
     case MessageType.Normal:
       icon = "   ";
       break;
-    case MessageType.PassedThru:
+    case MessageType.PassedThrough:
       icon = "↑ ↑";
       color = ConsoleColor.Gray;
       break;
@@ -100,7 +101,7 @@ void WriteWithColorAsciiIcons(string message, MessageType type)
   switch (type)
   {
     case MessageType.Error:
-      icon = "× →";
+      icon = "! →";
       color = ConsoleColor.Red;
       break;
     case MessageType.Failed:
@@ -117,7 +118,7 @@ void WriteWithColorAsciiIcons(string message, MessageType type)
     case MessageType.Normal:
       icon = "   ";
       break;
-    case MessageType.PassedThru:
+    case MessageType.PassedThrough:
       icon = "↑ ↑";
       color = ConsoleColor.Gray;
       break;
@@ -149,7 +150,7 @@ void WriteWithInvertedColorAsciiIcons(string message, MessageType type)
   switch (type)
   {
     case MessageType.Error:
-      icon = "× →";
+      icon = "! →";
       fgColor = ConsoleColor.White;
       bgColor = ConsoleColor.Red;
       break;
@@ -169,7 +170,7 @@ void WriteWithInvertedColorAsciiIcons(string message, MessageType type)
     case MessageType.Normal:
       icon = "   ";
       break;
-    case MessageType.PassedThru:
+    case MessageType.PassedThrough:
       icon = "↑ ↑";
       fgColor = ConsoleColor.Black;
       bgColor = ConsoleColor.Gray;
@@ -216,13 +217,13 @@ void WriteColorWithEmojiIcons(string message, MessageType type)
       icon = "⬅️ ";
       break;
     case MessageType.Mocked:
-      icon = "✴️ ";
+      icon = "🔁";
       color = ConsoleColor.DarkYellow;
       break;
     case MessageType.Normal:
       icon = " ";
       break;
-    case MessageType.PassedThru:
+    case MessageType.PassedThrough:
       icon = "🦒";
       color = ConsoleColor.Gray;
       break;
@@ -231,7 +232,7 @@ void WriteColorWithEmojiIcons(string message, MessageType type)
       color = ConsoleColor.Blue;
       break;
     case MessageType.Warning:
-      icon = "⚠️ ";
+      icon = "❗️";
       color = ConsoleColor.Yellow;
       break;
     default:
@@ -285,7 +286,7 @@ void WriteColorWithLabels(string message, MessageType type)
     case MessageType.Normal:
       label = "";
       break;
-    case MessageType.PassedThru:
+    case MessageType.PassedThrough:
       label = "[  GRAPH  ]";
       color = ConsoleColor.Gray;
       break;
@@ -332,7 +333,7 @@ void WriteWithColorLabels(string message, MessageType type)
     case MessageType.Normal:
       label = "";
       break;
-    case MessageType.PassedThru:
+    case MessageType.PassedThrough:
       label = "[  GRAPH  ]";
       color = ConsoleColor.Gray;
       break;
@@ -384,7 +385,7 @@ void WriteWithInvertedColorLabels(string message, MessageType type)
     case MessageType.Normal:
       label = "";
       break;
-    case MessageType.PassedThru:
+    case MessageType.PassedThrough:
       label = "[  GRAPH  ]";
       fgColor = ConsoleColor.Black;
       bgColor = ConsoleColor.Gray;
@@ -411,11 +412,60 @@ void WriteWithInvertedColorLabels(string message, MessageType type)
   Console.ForegroundColor = defaultFgColor;
   Console.WriteLine($"  {message}");
 }
+
+void WriteWithShortColorLabels(string message, MessageType type)
+{
+  var label = "";
+  var color = defaultFgColor;
+
+  switch (type)
+  {
+    case MessageType.Error:
+      label = "FAIL ";
+      color = ConsoleColor.Red;
+      break;
+    case MessageType.Failed:
+      label = "CHAOS";
+      color = ConsoleColor.DarkRed;
+      break;
+    case MessageType.InterceptedRequest:
+      label = "REQST";
+      break;
+    case MessageType.Mocked:
+      label = "MOCK ";
+      color = ConsoleColor.DarkYellow;
+      break;
+    case MessageType.Normal:
+      label = "";
+      break;
+    case MessageType.PassedThrough:
+      label = "GRAPH";
+      color = ConsoleColor.Gray;
+      break;
+    case MessageType.Tip:
+      label = "TIP  ";
+      color = ConsoleColor.Blue;
+      break;
+    case MessageType.Warning:
+      label = "WARN ";
+      color = ConsoleColor.Yellow;
+      break;
+    default:
+      label = "";
+      break;
+  }
+
+  Console.ForegroundColor = color;
+  Console.Write(label);
+  Console.ForegroundColor = defaultFgColor;
+  Console.WriteLine($"  {message}");
+}
+
 enum MessageType
 {
   Normal,
   InterceptedRequest,
-  PassedThru,
+  PassedThrough,
   Warning,
   Tip,
   Failed,
