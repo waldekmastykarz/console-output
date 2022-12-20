@@ -1,4 +1,6 @@
-﻿var defaultFgColor = Console.ForegroundColor;
+﻿Console.OutputEncoding = System.Text.Encoding.UTF8;
+
+var defaultFgColor = Console.ForegroundColor;
 var defaultBgColor = Console.BackgroundColor;
 
 var legend = new[] {
