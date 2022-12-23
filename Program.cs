@@ -736,6 +736,7 @@ void WriteBoxedWithNerdFontIconsOption1()
   Console.WriteLine($"{noIconSpacing}{iconSpacing}{bottomLeft}GET https://graph.microsoft.com/v1.0/me/todo/lists");
 
   // intercept
+  Console.ForegroundColor = defaultFgColor;
   Console.WriteLine($"{interceptedRequest}{iconSpacing}GET https://graph.microsoft.com/v1.0/me/joinedTeams?$select=displayName,id,isArchived");
   Console.WriteLine($"{interceptedRequest}{iconSpacing}GET https://graph.microsoft.com/v1.0/me/todo/lists");
 
@@ -750,6 +751,7 @@ void WriteBoxedWithNerdFontIconsOption1()
   Console.WriteLine($"{noIconSpacing}{iconSpacing}{bottomLeft}GET https://graph.microsoft.com/v1.0/me/joinedTeams?$select=displayName,id,isArchived");
 
   // intercept
+  Console.ForegroundColor = defaultFgColor;
   Console.WriteLine($"{interceptedRequest}{iconSpacing}GET https://graph.microsoft.com/v1.0/me/todo/lists");
 
   // error
